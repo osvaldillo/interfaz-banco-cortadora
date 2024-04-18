@@ -13,6 +13,7 @@ class Ventana(QMainWindow):
         self.botonConectar.clicked.connect(self.conectar)
         self.botonCilindroEmpujador.clicked.connect(self.enviar)
         self.botonGuillotina.clicked.connect(self.enviar)
+        self.botonCortar.clicked.connect(self.enviar)
 
     def conectar(self, bt='Conectar'):
         try: btnTxt = self.sender().text()
@@ -61,14 +62,16 @@ class Ventana(QMainWindow):
     def enviar(self):
         if self.sender() == self.botonCilindroEmpujador: send = 'C'
         elif self.sender() == self.botonGuillotina: send = 'G'
-        else: print("No digas mmds")
         if self.conectado:
             if self.sender().text() == "Extender":
                 self.placa.write(f'E{send}'.encode())
                 self.sender().setText("Contraer")
-            else:
+            elif self.sender().text() == "Contraer":
                 self.placa.write(f'C{send},'.encode())
                 self.sender().setText("Extender")
+            elif self.sender().text() == "Cortar":
+                print("cortando")
+                self.placa.write('SE,'.encode())
 
 
 

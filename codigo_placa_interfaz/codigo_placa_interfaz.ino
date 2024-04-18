@@ -1,6 +1,7 @@
 String data;
 #define cilindroEmpujador 12
 #define cilindroCortador 11
+int i;
 
 void setup() {
     Serial.begin(9600);
@@ -22,6 +23,17 @@ void loop() {
         }
         else if(data == "CG"){
           digitalWrite(cilindroCortador, LOW);
+        }
+        else if(data == "SE"){
+          i = 0;
+          while( i< 10){
+            digitalWrite(cilindroCortador, HIGH);
+            delay(100);
+            digitalWrite(cilindroCortador, LOW);
+            delay(100);
+            i++;
+          }
+
         }
     }
 }
