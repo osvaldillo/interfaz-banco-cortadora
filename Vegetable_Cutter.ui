@@ -50,7 +50,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Extender</string>
+     <string>Comenzar secuencia</string>
     </property>
    </widget>
    <widget class="QPushButton" name="botonGuillotina">

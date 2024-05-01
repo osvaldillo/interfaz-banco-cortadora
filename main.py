@@ -61,7 +61,7 @@ class Ventana(QMainWindow):
 
     def enviar(self):
         if self.sender() == self.botonCilindroEmpujador: send = 'C'
-        elif self.sender() == self.botonGuillotina: send = 'G'
+        elif self.sender() == self.botonGuillotina: send = '    G'
         if self.conectado:
             if self.sender().text() == "Extender":
                 self.placa.write(f'E{send}'.encode())
@@ -72,6 +72,8 @@ class Ventana(QMainWindow):
             elif self.sender().text() == "Cortar":
                 print("cortando")
                 self.placa.write('SE,'.encode())
+            elif self.sender().text() == "Comenzar secuencia":
+                self.placa.write('PN,'.encode())
 
 
 
