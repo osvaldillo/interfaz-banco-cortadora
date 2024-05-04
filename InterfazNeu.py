@@ -3,7 +3,56 @@ import cv2
 from PyQt5 import uic
 from PyQt5.QtWidgets import * 
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal
 import serial
+import time
+
+class Hilo(QThread):
+    available = pyqtSignal(bool)
+    def __init__(self):
+        super(Hilo, self).__init__()
+        self.setConnection()
+    def setConnection(self):
+        ports = [f'COM{i}' for i in range(4, 12)]
+        for port in ports:
+            with serial.Serial() as self.board:
+                self.board.port = port
+                try:
+                    self.board.close()
+                    self.board = serial.Serial(port, 9600)
+                    self.conected= True
+                    print("Succesfully connected to serial port")
+                    break
+                except serial.serialutil.SerialException:
+                    continue
+        else:
+            print("Failed trying to connect to serial")
+            self.conected = False
+        return self.conected
+    def disconnect(self):
+        ports = [f'COM{i}' for i in range(4, 12)]
+        for port in ports:
+            with serial.Serial() as self.board:
+                self.board.port = port
+                try:
+                    self.board.close()
+                    break
+                except serial.serialutil.SerialException:
+                    continue
+        else:
+            print("No ports found")
+        return True
+
+
+
+    def run(self):
+        while True:
+            try:
+                if self.board.in_waiting > 0:
+                    self.available.emit(True)
+                    time.sleep(0.1)
+            except serial.serialutil.SerialException:
+                pass
 
 class Window(QMainWindow): 
     def __init__(self):
