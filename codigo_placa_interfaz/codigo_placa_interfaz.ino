@@ -60,4 +60,11 @@ void loop() {
           }
         }
     }
+    Serial.print("A0: ");
+    Serial.print(digitalRead(sensorA0));
+    Serial.print(" A1: ");
+    Serial.print(digitalRead(sensorA1));
+    Serial.print(" B1: ");
+    Serial.println(digitalRead(sensorB1));
+    delay(300);
 }

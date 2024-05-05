@@ -725,7 +725,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>60</y>
+      <y>40</y>
       <width>75</width>
       <height>24</height>
      </rect>
@@ -745,6 +745,19 @@
     </property>
     <property name="text">
      <string>Disconnected</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="disconnectionButton">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>80</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Disconnect</string>
     </property>
    </widget>
   </widget>

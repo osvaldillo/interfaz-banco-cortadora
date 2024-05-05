@@ -64,6 +64,7 @@ class Window(QMainWindow):
         self.hilo.available.connect(self.recibir)
         self.hilo.start()
         self.conectarse()
+
         self.botonEnviar.clicked.connect(self.enviar)
         self.botonConectar.clicked.connect(self.conectarse)
         self.botonDesconectar.clicked.connect(self.desconectarse)
