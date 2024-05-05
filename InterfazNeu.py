@@ -125,8 +125,11 @@ class Window(QMainWindow):
         elif self.sender() == self.RecoilA: send = 'A-'
         elif self.sender() == self.RecoilB: send = 'B-'
         elif self.sender() == self.Auto: send = 'Start secuence'
-        elif self.sender() == self.horizontalSlider: send = f'flow {self.horizontalSlider.value()}'
-        self.thread.board.write((send + '\r').encode())
+        elif self.sender() == self.horizontalSlider:
+            send = f'F {self.horizontalSlider.value()}'
+            time.sleep(0.01)
+        print(send)
+        self.thread.board.write((send + '\r\n').encode())
 
 
     def getData(self):
@@ -142,12 +145,15 @@ class Window(QMainWindow):
             elif receivedText[6] == "1" and receivedText[12] == "0":
                 self.AdvanceA.setEnabled(True)
                 self.RecoilA.setEnabled(False)
-            if receivedText[18] == "0":
-                self.RecoilB.setEnabled(True)
-                self.AdvanceB.setEnabled(False)
-            else:
-                self.RecoilB.setEnabled(False)
-                self.AdvanceB.setEnabled(True)
+            try:
+                if receivedText[18] == "0":
+                    self.RecoilB.setEnabled(True)
+                    self.AdvanceB.setEnabled(False)
+                else:
+                    self.RecoilB.setEnabled(False)
+                    self.AdvanceB.setEnabled(True)
+            except IndexError:
+                print(receivedText)
         else:
             print("Couldn't get data")
 
