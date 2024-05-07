@@ -4,62 +4,72 @@ from machine import *
 import time
 import _thread
 
-
-read = []
-flowReg = PWM(0)
-flowReg.freq(50)
-#presReg = PWM(1)
-#presReg.freq(15000)
-cilinderAplus = Pin(2, Pin.OUT)
-cilinderAminus = Pin(3, Pin.OUT)
-cilinderB = Pin(4, Pin.OUT)
+fR = Pin(0, Pin.OUT)
+pR = PWM(1)
+pR.freq(15000)
+percent = int(65535/100*50)
+pR.duty_u16(percent)
+y1 = Pin(2, Pin.OUT)
+y2 = Pin(3, Pin.OUT)
+y3 = Pin(4, Pin.OUT)
 sensorA0 = Pin(19,Pin.IN)
 sensorA1 = Pin(20,Pin.IN)
 sensorB1 = Pin(21,Pin.IN)
+#Variable de apoyo
 prueba = Pin(25, Pin.OUT)
-A0 = sensorA0.value()
-A1 = sensorA1.value()
-B1 = sensorB1.value()
+
+# Variables de comunicación entre hilo principal e hilo secundario
+read = [] 
+angle = 180
+#prueba.on()
+def servo(angle, frequency=50):
+    duty = 500 + (angle/180)*2000
+    duty_n = 1000000/frequency - duty
+    fR.on()
+    utime.sleep_us(int(duty))
+    fR.off()
+    utime.sleep_us(int(duty_n))
+
 
 def reading():
     while True:
         global read
+        global angle
         data  = str(sys.stdin.readline())
         prueba.off()
         read = list(data)
         if read[0] == "A":
             if read[1] == '+':
-                cilinderAplus.on()
-                cilinderAminus.off()
+                y1.on()
+                y2.off()
             elif read[1] == '-':
-                cilinderAplus.off()
-                cilinderAminus.on()
+                y1.off()
+                y2.on()
+            elif read[1] == '*':
+                y1.off()
+                y2.off()
         elif read[0] == "B":
             if read[1] == '+':
-                cilinderB.on()
+                y3.on()
             elif read[1] == '-':
-                cilinderB.off()
+                y3.off()
         elif read[0] == "F":
             num = ""
-            #prueba.on()
             for i in read[2:]:
                 if i == "'\'": break
                 num += i
-            duty = 1000 + int(7955*int(num)/180)
-            print(duty)
-            flowReg.duty_u16(duty)
-        #else:
-            #prueba.on()
-        #utime.sleep(0.5)
+            angle = int(num)
 
-#_thread.start_new_thread(reading, ())
+_thread.start_new_thread(reading, ())
         
-    
+A0 = sensorA0.value() #variable de apoyo
+A1 = sensorA1.value() #variable de apoyo
+B1 = sensorB1.value() #variable de apoyo
+
 while True:
-    prueba.on()
-    reading()
+    #reading()
+    servo(angle)
     changed = False
-    
     if A0 != sensorA0.value():
         A0 = sensorA0.value()
         changed = True
@@ -70,5 +80,9 @@ while True:
         B1 = sensorB1.value()
         changed = True
     if changed:
+        prueba.on()
         sender = f'A0: {A0} A1: {A1} B1: {B1}'
         sys.stdout.write(sender + '\r\n')
+    
+    
+    

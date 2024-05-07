@@ -139,12 +139,14 @@ class Window(QMainWindow):
             if receivedText[6] == "0" and receivedText[12] == "1":
                 self.AdvanceA.setEnabled(False)
                 self.RecoilA.setEnabled(True)
+                self.thread.board.write(('A*' + '\r\n').encode())
             elif receivedText[6] == "0" and receivedText[12] == "0":
                 self.AdvanceA.setEnabled(True)
                 self.RecoilA.setEnabled(True)
             elif receivedText[6] == "1" and receivedText[12] == "0":
                 self.AdvanceA.setEnabled(True)
                 self.RecoilA.setEnabled(False)
+                self.thread.board.write(('A*' + '\r\n').encode())
             try:
                 if receivedText[18] == "0":
                     self.RecoilB.setEnabled(True)
