@@ -73,12 +73,30 @@ def reading():
             while A1 == 0:
                 y1.on()
                 y2.off()
+                utime.sleep_ms(200)
+                y1.off()
+                y3.on()
+                utime.sleep_ms(200)
+                y3.off()
+            y2.on()
+            fin = f'fin'
+            sys.stdout.write(fin + '\r\n')
+        elif read[0] == 'C':    
+            if A1 == 0:
+                y1.on()
+                y2.off()
                 utime.sleep_ms(100)
                 y1.off()
                 y3.on()
-                utime.sleep_ms(100)
+                utime.sleep_ms(200)
                 y3.off()
-            y2.on()
+            else:
+                while A0 != 1:
+                    y2.on()
+                    y1.off()
+                y2.off()
+                
+            
             
             
             
@@ -94,7 +112,7 @@ while True:
     #global A0
     #global A1
     #global B1
-    servo(angle)
+    servo(angle, 350)
     changed = False
     if A0 != sensorA0.value():
         A0 = sensorA0.value()
