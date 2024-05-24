@@ -16,7 +16,7 @@ class Thread(QThread):
         super(Thread, self).__init__()
         self.setConnection()
     def setConnection(self):
-        ports = [f'COM{i}' for i in range(4, 12)]
+        ports = [f'COM{i}' for i in range(4, 15)]
         for port in ports:
             with serial.Serial() as self.board:
                 self.board.port = port
@@ -33,7 +33,7 @@ class Thread(QThread):
             self.conected = False
         return self.conected
     def disconnect(self):
-        ports = [f'COM{i}' for i in range(4, 12)]
+        ports = [f'COM{i}' for i in range(4, 15)]
         for port in ports:
             with serial.Serial() as self.board:
                 self.board.port = port
@@ -90,7 +90,8 @@ class Window(QMainWindow):
         self.connectionButton.clicked.connect(self.enableSerialConnection)
         self.disconnectionButton.clicked.connect(self.disableSerialConnection)
         self.horizontalSlider.valueChanged.connect(self.sendData)
-        
+        self.SliderHardness.valueChanged.connect(self.sendData)
+
         self.GotoInstruct.setText("Instructions")
         self.GotoControls.setText("Controls")
     def enableSerialConnection(self):
@@ -124,9 +125,12 @@ class Window(QMainWindow):
         elif self.sender() == self.AdvanceB: send = 'B+'
         elif self.sender() == self.RecoilA: send = 'A-'
         elif self.sender() == self.RecoilB: send = 'B-'
-        elif self.sender() == self.Auto: send = 'Start secuence'
+        elif self.sender() == self.Auto: send = 'S'
         elif self.sender() == self.horizontalSlider:
             send = f'F {self.horizontalSlider.value()}'
+            time.sleep(0.01)
+        elif self.sender() == self.SliderHardness:
+            send = f'P {self.SliderHardness.value()}'
             time.sleep(0.01)
         print(send)
         self.thread.board.write((send + '\r\n').encode())
