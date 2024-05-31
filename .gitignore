@@ -2,3 +2,5 @@
 .idea
 prueba serial.py
 *.png
+*.jpeg
+*.jpg

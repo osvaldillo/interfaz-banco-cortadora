@@ -69,10 +69,10 @@ class Window(QMainWindow):
         
         # self.img_cil = QPixmap('CilindroSF.png')  
         # self.label_5.setPixmap(self.img_cil)
-        self.label_5.setStyleSheet('border-image : url(CilindroSF1.png);')
-        self.label_6.setStyleSheet('border-image : url(CilindroSF1.png);')
-        self.label_9.setStyleSheet('border-image : url(CilindroSF1.png);')
-        self.label_4.setStyleSheet('border-image : url(CilindroSF1.png);')
+        #self.label_5.setStyleSheet('border-image : url(CilindroSF1.png);')
+        #self.label_6.setStyleSheet('border-image : url(CilindroSF1.png);')
+        self.label_9.setStyleSheet('border-image : url(empujar.jpg);')
+        self.label_4.setStyleSheet('border-image : url(cortar.jpeg);')
         self.Carrot.setStyleSheet('border-image : url(Carrot.png);')
         self.Cucumber.setStyleSheet('border-image : url(Cucumber.png);')
         self.Ban.setStyleSheet('border-image : url(Ban.png);')
@@ -87,6 +87,7 @@ class Window(QMainWindow):
         self.RecoilA.clicked.connect(self.sendData)
         self.RecoilB.clicked.connect(self.sendData)
         self.Auto.clicked.connect(self.sendData)
+        self.slicingButton.clicked.connect(self.sendData)
         self.connectionButton.clicked.connect(self.enableSerialConnection)
         self.disconnectionButton.clicked.connect(self.disableSerialConnection)
         self.horizontalSlider.valueChanged.connect(self.sendData)
@@ -177,7 +178,7 @@ class Window(QMainWindow):
         elif self.sender() == self.AdvanceB: send = 'B+'
         elif self.sender() == self.RecoilA: send = 'A-'
         elif self.sender() == self.RecoilB: send = 'B-'
-        elif self.sender() == self.Auto:
+        elif self.sender() == self.Auto: #comenzar secuencia de corte
             send = 'S'
             self.AdvanceA.setEnabled(False)#borrar si es necesario
             self.AdvanceB.setEnabled(False)
@@ -187,6 +188,8 @@ class Window(QMainWindow):
             self.slicingButton.setEnabled(False)
             self.horizontalSlider.setEnabled(False)
             self.SliderHardness.setEnabled(False)
+        elif self.sender() == self.slicingButton: #realizar un único corte
+            send = 'X'
         elif self.sender() == self.horizontalSlider:
             send = f'F {self.horizontalSlider.value()}'
             time.sleep(0.01)
@@ -217,19 +220,20 @@ class Window(QMainWindow):
                 self.slicingButton.setEnabled(True)
                 self.horizontalSlider.setEnabled(True)
                 self.SliderHardness.setEnabled(True)
+                print("finalizado")
             else:
-                if receivedText[6] == "0" and receivedText[12] == "1":
+                if receivedText[6] == "0" and receivedText[12] == "0":
                     self.AdvanceA.setEnabled(False)
                     self.RecoilA.setEnabled(True)
                     self.thread.board.write(('A*' + '\r\n').encode())
-                elif receivedText[6] == "0" and receivedText[12] == "0":
+                elif receivedText[6] == "0" and receivedText[12] == "1":
                     self.AdvanceA.setEnabled(True)
                     self.RecoilA.setEnabled(True)
-                elif receivedText[6] == "1" and receivedText[12] == "0":
+                elif receivedText[6] == "1" and receivedText[12] == "1":
                     self.AdvanceA.setEnabled(True)
                     self.RecoilA.setEnabled(False)
                     self.thread.board.write(('A*' + '\r\n').encode())
-                try:
+                try: #modificar si es necesario el 31 de mayo
                     if receivedText[18] == "0":
                         self.RecoilB.setEnabled(True)
                         self.AdvanceB.setEnabled(False)
